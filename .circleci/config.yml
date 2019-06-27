@@ -1,0 +1,94 @@
+version: 2.1
+
+references:
+  working_dir: &working_dir /tmp/workspace/farmsmart
+
+  workspace: &workspace /tmp/workspace
+
+  gcp-firebase: &gcp-firebase /tmp/workspace/farmsmart/gcp-firebase
+
+  utilities: &utilities /tmp/workspace/farmsmart/utilities
+
+  restore_workspace: &restore_workspace
+    attach_workspace:
+      at: *workspace
+
+  save_workspace: &save_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - farmsmart
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.3
+    steps:
+      - checkout
+      - *save_workspace
+
+  utilities:
+    machine: true
+    working_directory: *working_dir
+    environment:
+      REPO: farmsmart/utilities
+    steps:
+      - *restore_workspace
+      - run:
+          name: Login to docker hub
+          command: |
+            set -euo pipefail
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+      - run:
+          working_directory: *utilities
+          name: Build docker image
+          command: |
+            export tagversion=$(date +%Y%m%d-%H%M)
+            docker build -t $REPO:${tagversion} .
+            docker push $REPO:${tagversion}
+ 
+  gcp-firebase:
+    machine: true
+    working_directory: *working_dir
+    environment:
+      REPO: farmsmart/gcp-firebase
+    steps:
+      - *restore_workspace
+      - run:
+          name: Login to docker hub
+          command: |
+            set -euo pipefail
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+      - run:
+          working_directory: *gcp-firebase
+          name: Build docker image
+          command: |
+            export tagversion=$(date +%Y%m%d-%H%M)
+            docker build -t $REPO:${tagversion} .
+            docker push $REPO:${tagversion}
+
+workflows:
+  farmsmart-image:
+    jobs:
+      - build
+
+      - utilities:
+          name: utilities
+          requires:
+            - build
+          context: docker-hub
+          filters:
+            branches:
+              only: master
+
+      - gcp-firebase:
+          requires:
+            - build
+          context: docker-hub
+          filters:
+            branches:
+              only: master
+
+      
