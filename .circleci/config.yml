@@ -46,7 +46,7 @@ jobs:
           name: Build docker image
           command: |
             export tagversion=$(date +%Y%m%d-%H%M)
-            docker build -t $REPO:${tagversion} .
+            docker build -t $REPO -t $REPO:${tagversion} .
             docker push $REPO:${tagversion}
  
   gcp-firebase:
@@ -67,7 +67,7 @@ jobs:
           name: Build docker image
           command: |
             export tagversion=$(date +%Y%m%d-%H%M)
-            docker build -t $REPO:${tagversion} .
+            docker build -t $REPO -t $REPO:${tagversion} .
             docker push $REPO:${tagversion}
 
 workflows:
