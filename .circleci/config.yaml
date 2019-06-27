@@ -20,7 +20,7 @@ references:
         - farmsmart
 
 jobs:
-  checkout:
+  build:
     docker:
       - image: circleci/python:3.7.3
     steps:
@@ -72,12 +72,12 @@ jobs:
 workflows:
   farmsmart-image:
     jobs:
-      - checkout
+      - build
 
       - utilities:
           name: utilities
           requires:
-            - checkout
+            - build
           context: docker-hub
           filters:
             branches:
@@ -85,7 +85,7 @@ workflows:
 
       - gcp-firebase:
           requires:
-            - checkout
+            - build
           context: docker-hub
           filters:
             branches:
