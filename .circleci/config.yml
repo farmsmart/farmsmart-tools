@@ -80,16 +80,16 @@ workflows:
           requires:
             - build
           context: docker-hub
-          #filters:
-          #  branches:
-          #    only: master
+          filters:
+            branches:
+              only: master
 
       - gcp-firebase:
           requires:
             - build
           context: docker-hub
-          #filters:
-          #  branches:
-          #    only: master
+          filters:
+            branches:
+              only: master
 
       
