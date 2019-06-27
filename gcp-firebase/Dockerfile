@@ -15,3 +15,9 @@ RUN SOPS_PKG=/tmp/sops/sops.deb \
     && apt install ${SOPS_PKG} \
     && rm ${SOPS_PKG}
 
+ENV FARMSMART_GCP_KMS projects/farmsmart-admin/locations/global/keyRings/farmsmart-admin/cryptoKeys/farmsmart
+
+WORKDIR /farmsmart/sops
+
+# Setup generic scripts
+COPY ./scripts /farmsmart/sops
