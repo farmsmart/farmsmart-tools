@@ -47,7 +47,7 @@ jobs:
           command: |
             export tagversion=$(date +%Y%m%d-%H%M)
             docker build -t $REPO -t $REPO:${tagversion} .
-            docker push $REPO:${tagversion}
+            docker push $REPO
  
   gcp-firebase:
     machine: true
@@ -68,7 +68,7 @@ jobs:
           command: |
             export tagversion=$(date +%Y%m%d-%H%M)
             docker build -t $REPO -t $REPO:${tagversion} .
-            docker push $REPO:${tagversion}
+            docker push $REPO
 
 workflows:
   farmsmart-image:
