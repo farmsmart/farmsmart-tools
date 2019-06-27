@@ -23,6 +23,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7.3
+    working_directory: *working_dir  
     steps:
       - checkout
       - *save_workspace
