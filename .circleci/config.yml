@@ -79,7 +79,7 @@ jobs:
 workflows:
   farmsmart-image:
     jobs:
-      - build
+      - build:
           filters:
             tags:
               only: /.*/
