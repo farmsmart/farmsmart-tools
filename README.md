@@ -1,3 +1,7 @@
+# Docker Files
+These Docker images are publicly hosted to Docker Hub
+
+### Building images and testing
 It is recommended to run these commands in a Linux machine
 
 1. Go into each folder and update the Dockerfile
