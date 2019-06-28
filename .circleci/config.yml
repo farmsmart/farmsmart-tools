@@ -89,7 +89,7 @@ workflows:
           filters:
             branches:
               only: master
-            tag:
+            tags:
               only: /^v.*/
 
       - gcp-firebase:
@@ -99,7 +99,7 @@ workflows:
           filters:
             branches:
               only: master
-            tag:
+            tags:
               only: /^v.*/
 
       - gcp-firebase-emulator:
@@ -110,7 +110,7 @@ workflows:
           filters:
             branches:
               only: master
-            tag:
+            tags:
               only: /^v.*/
 
       
