@@ -5,11 +5,11 @@ references:
 
   workspace: &workspace /tmp/workspace
 
-  gcp-firebase: &gcp-firebase /tmp/workspace/farmsmart/gcp-firebase
+  gcp-firebase_dir: &gcp-firebase_dir /tmp/workspace/farmsmart/gcp-firebase
 
-  gcp-firebase-emulator: &gcp-firebase-emulator /tmp/workspace/farmsmart/gcp-firebase-emulator
+  gcp-firebase-emulator_dir: &gcp-firebase-emulator_dir /tmp/workspace/farmsmart/gcp-firebase-emulator
 
-  utilities: &utilities /tmp/workspace/farmsmart/utilities
+  utilities_dir: &utilities_dir /tmp/workspace/farmsmart/utilities
 
   restore_workspace: &restore_workspace
     attach_workspace:
@@ -20,6 +20,22 @@ references:
       root: *workspace
       paths:
         - farmsmart
+
+  login_to_docker_hub: &login_to_docker_hub
+    run:
+          name: Login to docker hub
+          command: |
+            set -euo pipefail
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+  
+  build_and_push_to_docker_hub: &build_and_push_to_docker_hub
+    run:
+          name: Build docker image
+          command: |
+            set -euo pipefail
+            export tagversion=$CIRCLE_TAG
+            docker build -t $REPO -t $REPO:${tagversion} .
+            docker push $REPO
 
 jobs:
   build:
@@ -32,66 +48,33 @@ jobs:
 
   utilities:
     machine: true
-    working_directory: *working_dir
+    working_directory: *utilities_dir
     environment:
       REPO: farmsmart/utilities
     steps:
       - *restore_workspace
-      - run:
-          name: Login to docker hub
-          command: |
-            set -euo pipefail
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-
-      - run:
-          working_directory: *utilities
-          name: Build docker image
-          command: |
-            export tagversion=$(date +%Y%m%d-%H%M)
-            docker build -t $REPO -t $REPO:${tagversion} .
-            docker push $REPO
+      - *login_to_docker_hub
+      - *build_and_push_to_docker_hub
  
   gcp-firebase:
     machine: true
-    working_directory: *working_dir
+    working_directory: *gcp-firebase_dir
     environment:
       REPO: farmsmart/gcp-firebase
     steps:
       - *restore_workspace
-      - run:
-          name: Login to docker hub
-          command: |
-            set -euo pipefail
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-
-      - run:
-          working_directory: *gcp-firebase
-          name: Build docker image
-          command: |
-            export tagversion=$(date +%Y%m%d-%H%M)
-            docker build -t $REPO -t $REPO:${tagversion} .
-            docker push $REPO
+      - *login_to_docker_hub
+      - *build_and_push_to_docker_hub
   
   gcp-firebase-emulator:
     machine: true
-    working_directory: *working_dir
+    working_directory: *gcp-firebase-emulator_dir
     environment:
       REPO: farmsmart/gcp-firebase-emulator
     steps:
       - *restore_workspace
-      - run:
-          name: Login to docker hub
-          command: |
-            set -euo pipefail
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-
-      - run:
-          working_directory: *gcp-firebase-emulator
-          name: Build docker image
-          command: |
-            export tagversion=$(date +%Y%m%d-%H%M)
-            docker build -t $REPO -t $REPO:${tagversion} .
-            docker push $REPO
+      - *login_to_docker_hub
+      - *build_and_push_to_docker_hub
 
 workflows:
   farmsmart-image:
@@ -106,6 +89,8 @@ workflows:
           filters:
             branches:
               only: master
+            tag:
+              only: /^v.*/
 
       - gcp-firebase:
           requires:
@@ -114,13 +99,18 @@ workflows:
           filters:
             branches:
               only: master
+            tag:
+              only: /^v.*/
 
       - gcp-firebase-emulator:
+          name: emulator-dependency
           requires:
             - gcp-firebase
           context: docker-hub
           filters:
             branches:
               only: master
+            tag:
+              only: /^v.*/
 
       
