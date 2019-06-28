@@ -88,7 +88,7 @@ workflows:
           context: docker-hub
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
 
@@ -98,18 +98,18 @@ workflows:
           context: docker-hub
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
 
       - gcp-firebase-emulator:
-          name: emulator-dependency
+          name: gcp-firebase-emulator
           requires:
             - gcp-firebase
           context: docker-hub
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
 
