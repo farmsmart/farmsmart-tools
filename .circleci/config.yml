@@ -80,6 +80,9 @@ workflows:
   farmsmart-image:
     jobs:
       - build
+          filters:
+            tags:
+              only: /.*/
 
       - utilities:
           name: utilities
