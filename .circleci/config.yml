@@ -11,6 +11,8 @@ references:
 
   utilities_dir: &utilities_dir /tmp/workspace/farmsmart/utilities
 
+  static-analysis_dir: &static-analysis_dir /tmp/workspace/farmsmart/static-analysis
+
   restore_workspace: &restore_workspace
     attach_workspace:
       at: *workspace
@@ -76,6 +78,16 @@ jobs:
       - *login_to_docker_hub
       - *build_and_push_to_docker_hub
 
+  static-analysis:
+    machine: true
+    working_directory: *static-analysis_dir
+    environment:
+      REPO: farmsmart/static-analysis
+    steps:
+      - *restore_workspace
+      - *login_to_docker_hub
+      - *build_and_push_to_docker_hub
+
 workflows:
   farmsmart-image:
     jobs:
@@ -107,6 +119,17 @@ workflows:
 
       - gcp-firebase-emulator:
           name: gcp-firebase-emulator
+          requires:
+            - gcp-firebase
+          context: docker-hub
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+            
+      - static-analysis:
+          name: static-analysis
           requires:
             - gcp-firebase
           context: docker-hub

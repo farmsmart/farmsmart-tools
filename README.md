@@ -12,5 +12,5 @@ docker build -t farmsmart/gcp-firebase .
 ```
 3. Test the image by using simple run commands
 ```
-docker run -it farmsmart/gcp-firebase python -v
+docker run --rm -it farmsmart/gcp-firebase python -v
 ```
