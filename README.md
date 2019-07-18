@@ -1,5 +1,7 @@
-# Docker Files
-These Docker images are publicly hosted to Docker Hub
+# Farmsmart Docker images
+These Docker images are used by CircleCI for building Farmsmart deployment artifacts. 
+
+The images are publicly hosted to Docker Hub.
 
 ### Building images and testing
 It is recommended to run these commands in a Linux machine
