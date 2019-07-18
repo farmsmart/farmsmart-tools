@@ -1,4 +1,4 @@
-FROM python:3.7-stretch
+FROM farmsmart/gcp-firebase
 
 RUN apt-get update && apt-get install -y openjdk-8-jdk-headless
 
