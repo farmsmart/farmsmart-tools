@@ -131,7 +131,7 @@ workflows:
       - static-analysis:
           name: static-analysis
           requires:
-            - gcp-firebase
+            - build
           context: docker-hub
           filters:
             branches:
