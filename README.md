@@ -1,7 +1,7 @@
 # Farmsmart Docker images
 These Docker images are used by CircleCI for building Farmsmart deployment artifacts. 
 
-The images are publicly hosted to Docker Hub.
+For every release of this repo, the docker images are built in Circle CI (https://circleci.com/gh/farmsmart) and uploaded to Docker Hub: https://hub.docker.com/search?q=farmsmart&type=image.
 
 ### Building images and testing
 It is recommended to run these commands in a Linux machine
